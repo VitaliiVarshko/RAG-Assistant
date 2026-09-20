@@ -209,6 +209,18 @@ Full-stack development and system design
 □ Hybrid search (semantic + keyword)
 □ Support for PDF/DOCX documents
 □ Reranking with cross-encoders
+
+## 📸 Screenshots
+
+### Main interface
+![Main interface](docs/screenshot-main.png)
+
+### Answer
+![Answer](docs/screenshot-answer.png)
+
+### Answer with sources
+![Answer with sources](docs/screenshot-sources.png)
+
 ## 📄 License
 This project is open source and available under the MIT License.
 
