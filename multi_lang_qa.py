@@ -1,3 +1,4 @@
+from email.mime import text
 import time
 
 import requests
@@ -56,11 +57,67 @@ class MultiLangQA:
             return None
         
     def translate_text(self, text, dest_lang):
-        """Translates text to the specified language using GoogleTranslator"""
+        """Translates text to the specified language using MyMemory API"""
         try:
             time.sleep(0.5)
-            translated = GoogleTranslator(source='auto', target=dest_lang).translate(text)
-            return translated
+            # translated = GoogleTranslator(source='auto', target=dest_lang).translate(text)
+
+            # MyMemory uses ISO 639-1 language codes
+            # Russian = ru, Ukrainian = uk, English = en
+
+            # Detect the source language (auto-detect)
+            source_lang = self.detect_language(text) or "ru"
+            
+            # If the source and target languages ​​match, return the text as is.
+            if source_lang == dest_lang:
+                return text
+            
+            # Forming a request to the MyMemory API
+            # langpair format: "source|target"
+            langpair = f"{source_lang}|{dest_lang}"
+            
+            url = "https://api.mymemory.translated.net/get"
+            params = {
+                "q": text,
+                "langpair": langpair
+            }
+            
+            # Adding email to increase daily limit from 5000 to 50000 characters [citation:6]
+            # Replace with your email if you want a higher limit
+            params["de"] = "your_email@example.com"
+            
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            # Check the response status
+            if data.get("responseStatus") == 200:
+                translated = data["responseData"]["translatedText"]
+                
+                # MyMemory sometimes returns text with the prefix "MYMEMORY WARNING"
+                # Check for this
+
+                if "MYMEMORY WARNING" in translated:
+                    print(f"⚠️ Warning MyMemory: {translated[:100]}")
+                    # Extract the clean translation if it exists
+                    if ":" in translated:
+                        translated = translated.split(":", 1)[-1].strip()
+                
+                return translated
+            else:
+                error_detail = data.get("responseDetails", "Unknown error")
+                print(f"⚠️ Error MyMemory: {error_detail}")
+                return text
+                
+        except requests.exceptions.Timeout:
+            print("⚠️ Timeout MyMemory API")
+            return text
+        except requests.exceptions.ConnectionError:
+            print("⚠️ Failed to connect to MyMemory API")
+            return text
+
+            
         except Exception as e:
             print(f"⚠️ Error translating: {e}")
             return text  
@@ -211,7 +268,7 @@ class MultiLangQA:
         """
         print(f"\n🔍 Question: {query}")
         
-        # 1. Определяем язык
+        # 1. We determine the language
         query_lang = self.detect_language(query)
         if not query_lang:
             print("⚠️ Failed to detect language, using Russian")
@@ -318,7 +375,7 @@ if __name__ == "__main__":
             question,
             top_k=5,  # More context for better answers
             generator="mistral",
-            model="mistral-small-2603" #2506  # Can use mistral-medium-latest or mistral-large-latest
+            model="mistral-medium-latest" #2506  # Can use mistral-medium-latest or mistral-large-latest
         )
         print(f"💬 Answer:\n{answer}")
         print("="*60)

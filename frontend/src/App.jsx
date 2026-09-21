@@ -77,18 +77,18 @@ function App() {
 
       {error && (
         <div className="error-box">
-          <strong>❌ Ошибка:</strong> {error}
+          <strong>❌ Error:</strong> {error}
         </div>
       )}
 
       {answer && (
         <div className="answer-box">
-          <h2>💬 Ответ:</h2>
+          <h2>💬 Answer:</h2>
           <p className="answer-text">{answer}</p>
           
           {sources.length > 0 && (
             <details className="sources">
-              <summary>📚 Источники ({sources.length})</summary>
+              <summary>📚 Sources ({sources.length})</summary>
               <ul>
                 {sources.map((src, idx) => (
                   <li key={idx}>

@@ -24,39 +24,58 @@ This project implements a complete RAG pipeline from scratch:
 - 🕷️ **Smart crawler** — respects the website structure, avoids duplicates, and extracts main content
 
 ## 🏗️ Architecture
+```
+┌─────────────┐       ┌───────────────┐      ┌─────────────────┐
+│ Website     │─────▶│ Crawler       │─────▶│ Text Chunks     │
+│ (RU / UK)   │       │(BeautifulSoup)│      │ (500 chars each)│
+└─────────────┘       └───────────────┘      └────────┬────────┘
+                                                      │
+                                                      ▼
+┌─────────────┐       ┌──────────────┐       ┌─────────────────┐
+│ React UI    │◀────▶│ FastAPI      │◀────▶│ ChromaDB        │
+│             │       │ Backend      │       │(vector store)   │
+└─────────────┘       └──────┬───────┘       └─────────────────┘
+                             │
+                             ▼
+                      ┌──────────────┐
+                      │ Mistral API  │
+                      │ / Ollama     │
+                      └──────────────┘
 
-┌─────────────┐ ┌──────────────┐ ┌─────────────────┐
-│ Website │─────▶│ Crawler │─────▶│ Text Chunks │
-│ (RU / UK) │ │ (BeautifulSoup)│ │ (500 chars each)│
-└─────────────┘ └──────────────┘ └────────┬────────┘
-│
-▼
-┌─────────────┐ ┌──────────────┐ ┌─────────────────┐
-│ React UI │◀────▶│ FastAPI │◀────▶│ ChromaDB │
-│ │ │ Backend │ │ (vector store) │
-└─────────────┘ └──────┬───────┘ └─────────────────┘
-│
-▼
-┌──────────────┐
-│ Mistral API │
-│ / Ollama │
-└──────────────┘
+```
+
+## 📸 Screenshots
+
+### Main interface
+![Main interface](docs/screenshot-main.png)
+
+### Answers
+![Answer en](docs/screenshot-answer-en.png)
+![Answer uk](docs/screenshot-answer-uk.png)
+![Answer ru](docs/screenshot-answer-ru.png)
+
+### Answer with sources
+![Answer with sources](docs/screenshot-sources1.png)
+![Answer with sources](docs/screenshot-sources2.png)
+
+### Backend
+![Backend](docs/screenshot-backend.png)
 
 
 ## 🛠️ Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| Vector Database | ChromaDB |
-| Embeddings | sentence-transformers (all-MiniLM-L6-v2) |
-| LLM (cloud) | Mistral API |
-| LLM (local) | Ollama (qwen3:1.7b) |
-| Backend | FastAPI + Uvicorn |
-| Frontend | React + Vite |
-| Crawling | requests + BeautifulSoup |
-| Language detection | langdetect |
-| Translation | deep-translator / Mistral |
-
+```
+| Component          | Technology                               |
+|--------------------|------------------------------------------|
+| Vector Database    | ChromaDB                                 |
+| Embeddings         | sentence-transformers (all-MiniLM-L6-v2) |
+| LLM (cloud)        | Mistral API                              |
+| LLM (local)        | Ollama (qwen3:1.7b)                      |
+| Backend            | FastAPI + Uvicorn                        |
+| Frontend           | React + Vite                             |
+| Crawling           | requests + BeautifulSoup                 |
+| Language detection | langdetect                               |
+| Translation        | MyMemory API                             |
+```
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -70,7 +89,7 @@ This project implements a complete RAG pipeline from scratch:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/VitaliiVarshko/multilingual-rag.git
+   git clone https://github.com/VitaliiVarshko/RAG-Assistant.git
    cd multilingual-rag
 
 2. **Create a virtual environment**
@@ -89,7 +108,7 @@ pip install -r requirements.txt
 
 bash
 cp .env.example .env
-# Edit .env and add your MISTRAL_API_KEY
+#Edit .env and add your MISTRAL_API_KEY
 
 5. **Install frontend dependencies**
 
@@ -170,7 +189,7 @@ python
 SUPPORTED_LANGUAGES = {
     "ru": {"name": "Russian", "collection": "documents_ru"},
     "uk": {"name": "Ukrainian", "collection": "documents_uk"},
-    "en": {"name": "English", "collection": "documents_en"},  # new
+    "en": {"name": "English", "collection": "documents_en"},  
 }
 ## Switching LLM Provider
 In the API request, change the generator field:
@@ -210,16 +229,6 @@ Full-stack development and system design
 □ Support for PDF/DOCX documents
 □ Reranking with cross-encoders
 
-## 📸 Screenshots
-
-### Main interface
-![Main interface](docs/screenshot-main.png)
-
-### Answer
-![Answer](docs/screenshot-answer.png)
-
-### Answer with sources
-![Answer with sources](docs/screenshot-sources.png)
 
 ## 📄 License
 This project is open source and available under the MIT License.
