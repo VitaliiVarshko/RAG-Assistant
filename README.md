@@ -160,7 +160,7 @@ curl -X POST http://127.0.0.1:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"question": "What services do you offer?"}'
 ## 📁 Project Structure
-text
+```
 multilingual-rag/
 ├── backend/
 │   ├── main.py              # FastAPI application
@@ -179,7 +179,7 @@ multilingual-rag/
 ├── .env.example
 ├── .gitignore
 └── README.md
-
+```
 ## 🔧 Configuration
 
 ## Adding a New Language
