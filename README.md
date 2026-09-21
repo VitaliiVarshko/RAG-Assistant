@@ -59,7 +59,7 @@ This project implements a complete RAG pipeline from scratch:
 ![Answer with sources](docs/screenshot-sources2.png)
 
 ### Backend
-![Backend](docs/screenshot-backend.png)
+![Backend](docs/screenshot-backend1.png)
 
 
 ## 🛠️ Tech Stack
